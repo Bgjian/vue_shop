@@ -1,0 +1,32 @@
+/* 全局样式表 */
+html,
+body,
+#app {
+  height : 100%;
+  margin : 0;
+  padding: 0;
+}
+
+.el-submenu__title:hover .firstLi span {
+  color: #333744 !important;
+}
+
+/* 取出饿了吗UI中ul的右边框 */
+ul {
+  border-right: none !important;
+}
+
+/* 警示框内容居中显示 */
+.el-message {
+  display   : inline-block !important;
+  text-align: center !important;
+}
+
+.el-message__content {
+  display: inline-block !important;
+}
+
+/* confirmbox位置 */
+.el-message-box {
+  transform: translateY(-136px) !important;
+}
