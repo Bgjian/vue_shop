@@ -10,25 +10,36 @@
       <!-- 页面主体区域 -->
       <el-container>
         <!-- 侧边栏开始 -->
-        <el-aside :width="isCollapse?'64px':'200px'">
+        <el-aside :style="isCollapse?'width:64px':'width:200px'">
           <!-- 侧边栏折叠按钮 -->
-          <div class="toggle-button" @click="toggleCollapse">
+          <div
+            class="toggle-button"
+            @click="toggleCollapse"
+            :style="isCollapse?'width:64px':'width:200px'"
+          >
             <!-- 折叠状态 -->
-            <span :class="isCollapse?'el-icon-back':'el-icon-right'"></span>
-            <span>{{isCollapse?'':'&nbsp;'}}</span>
-            <span :class="isCollapse?'el-icon-right':'el-icon-back'"></span>
+            <span :class="isCollapse?'el-icon-caret-left':'el-icon-caret-right'"></span>
+            <span v-html="isCollapse?'':'  '"></span>
+            <span :class="isCollapse?'el-icon-caret-right':'el-icon-caret-left'"></span>
           </div>
+          <!-- router是否使用 vue-router 的模式，启用该模式会在激活导航时以 index 作为 path 进行路由跳转 -->
+          <!-- default-active当前激活菜单的 index -->
+          <!-- unique-opened是否只保持一个子菜单的展开 -->
+          <!-- collapse是否水平折叠收起菜单 -->
           <el-menu
-            default-active="2"
+            :default-active="activePath"
+            unique-opened
+            router
             class="el-menu-vertical-demo"
             :collapse="isCollapse"
             :collapse-transition="false"
           >
-            <el-submenu :index="item.order+''" v-for="item in menuList" :key="item.id">
-              <!-- 一级菜单 -->
+            <!-- 一级菜单 -->
+            <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
               <template slot="title">
                 <div class="firstLi">
-                  <i :class="iconsObj[item.id]"></i>&nbsp;&nbsp;
+                  <i :class="iconsObj[item.id]"></i>
+                  <span style="display: inline-block;width:15px"></span>
                   <span>{{item.authName}}</span>
                 </div>
               </template>
@@ -37,8 +48,9 @@
                 :index="'/' + secondItem.path"
                 v-for="secondItem in item.children"
                 :key="secondItem.id"
+                @click="recordNavActive('/' + secondItem.path)"
               >
-                <i class="el-icon-menu"></i>&nbsp;&nbsp;
+                <i class="el-icon-menu"></i>&nbsp;
                 <span>{{secondItem.authName}}</span>
               </el-menu-item>
             </el-submenu>
@@ -47,7 +59,8 @@
         </el-aside>
         <!-- 主体区域 -->
         <el-main>
-          <h1>Main is OK!</h1>
+          <!-- 路由占位符 -->
+          <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -70,15 +83,17 @@ export default {
       },
       // 导航栏折叠状态
       isCollapse: false,
-      // 被激活的链接地址
+      // 记录被点击的链接地址
       activePath: ''
     }
   },
   // 在真实DOM绘制之前,执行
   created () {
     this.getMenuList()
+    this.activePath = window.sessionStorage.getItem('ActivePath')
   },
   methods: {
+    // 退出
     logout () {
       this.$confirm('您确定要退出吗?', '温馨提示', {
         confirmButtonText: '确定',
@@ -86,14 +101,15 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          // 退出时,清除sessionStorage中的Authorization
-          window.sessionStorage.removeItem('Authorization')
+          // 退出时,清除sessionStorage中的Authorization和sessionStorage
+          window.sessionStorage.clear()
           this.$router.push('/login')
         })
         .catch(() => {})
     },
+    // 点击头像时,让页面重定向刷新,清除sessionStorage中的ActivePath
     backhome () {
-      // 点击头像时,让页面重定向刷新
+      window.sessionStorage.removeItem('ActivePath')
       location.reload()
     },
     // 获取全部侧边栏数据
@@ -101,10 +117,16 @@ export default {
       const { data: res } = await this.axios.get('menus')
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
+      // console.log(this.menuList)
     },
     // 点击折叠与展开
     toggleCollapse () {
       this.isCollapse = !this.isCollapse
+    },
+    // 保存被点击的链接激活状态
+    recordNavActive (val) {
+      window.sessionStorage.setItem('ActivePath', val)
+      this.activePath = val
     }
   }
 }
@@ -163,12 +185,15 @@ export default {
         color: #fff;
       }
     }
-
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+      width: 200px;
+    }
     .el-menu-item span {
       color: #333744;
     }
     .toggle-button {
       color: #ccc;
+      background-color: #464955;
       height: 32px;
       line-height: 32px;
       text-align: center;
@@ -178,9 +203,6 @@ export default {
   .el-main {
     flex: 1;
     background-color: #eaedf1;
-    h1 {
-      margin: 0;
-    }
   }
 }
 </style>

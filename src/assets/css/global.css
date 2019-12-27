@@ -11,7 +11,7 @@ body,
   color: #333744 !important;
 }
 
-/* 取出饿了吗UI中ul的右边框 */
+/* 取消饿了吗UI中ul的右边框 */
 ul {
   border-right: none !important;
 }
@@ -29,4 +29,26 @@ ul {
 /* confirmbox位置 */
 .el-message-box {
   transform: translateY(-136px) !important;
+}
+
+/* 添加用户模态框的样式修改 */
+
+.el-dialog__body {
+  padding: 20px 30px 10px !important;
+}
+
+.el-dialog {
+  border-radius: 8px !important;
+}
+
+.el-form-item__label {
+  text-align: center !important;
+}
+
+.el-dialog__footer {
+  padding: 0px 30px 30px !important;
+}
+
+.el-dialog__header {
+  padding: 20px 20px 10px !important;
 }
