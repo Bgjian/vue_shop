@@ -2,9 +2,10 @@
 html,
 body,
 #app {
-  height : 100%;
-  margin : 0;
-  padding: 0;
+  /* min-width: 1366px; */
+  height      : 100%;
+  margin      : 0;
+  padding     : 0;
 }
 
 .el-submenu__title:hover .firstLi span {
@@ -51,4 +52,15 @@ ul {
 
 .el-dialog__header {
   padding: 20px 20px 10px !important;
+}
+
+/* 角色列表,三级权限样式 */
+.el-tag--light {
+  margin-left  : 5px;
+  margin-bottom: 5px;
+}
+
+/*  */
+.el-row .el-col:nth-child(last) {
+  border-bottom: 0;
 }
