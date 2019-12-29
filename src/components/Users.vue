@@ -26,7 +26,7 @@
       </el-row>
     </el-card>
     <!-- 添加用户的模态框 -->
-    <el-dialog title="添加用户" :visible.sync="addFormVisible" width="700px" @close="resetForm">
+    <el-dialog title="添加用户" :visible.sync="addFormVisible" width="700px" @close="resetAddForm">
       <el-form :model="addForm" :rules="addFormRoles" ref="addFormRef" status-icon>
         <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
           <el-input v-model="addForm.username" autocomplete="off" autofocus></el-input>
@@ -43,8 +43,26 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addFormVisible = false">取 消</el-button>
-        <el-button type="info" @click="resetForm">重 置</el-button>
+        <el-button type="info" @click="resetAddForm">重 置</el-button>
         <el-button type="primary" @click="addUser">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑用户的模态框 -->
+    <el-dialog title="修改用户" :visible.sync="editFormVisible" width="700px">
+      <el-form :model="editForm" :rules="addFormRoles" status-icon>
+        <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
+          <el-input v-model="editForm.username" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
+          <el-input v-model="editForm.email" autocomplete="off" autofocus></el-input>
+        </el-form-item>
+        <el-form-item label="电话" :label-width="formLabelWidth" prop="mobile">
+          <el-input v-model="editForm.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editUserById">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 用户列表区域 -->
@@ -62,11 +80,21 @@
       </el-table-column>
       <!-- 操作 -->
       <el-table-column label="操作" align="center">
-        <template>
+        <template slot-scope="scope">
           <!-- 修改 -->
-          <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            @click="getUserById(scope.row.id)"
+          ></el-button>
           <!-- 删除 -->
-          <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="removeUser(scope.row.id)"
+          ></el-button>
           <!-- 分配角色 -->
           <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
             <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
@@ -103,15 +131,15 @@ export default {
         }
       }, 300)
     }
-    var checkPassword = (rule, value, callback) => {
+    var checkPassword = (rule, value, cb) => {
       let leng = value.trim().length
       setTimeout(() => {
         if (!value.trim()) {
-          return callback(new Error('请输入登录密码'))
+          return cb(new Error('请输入登录密码'))
         } else if (!(leng >= 6 && leng <= 15)) {
-          return callback(new Error('长度在6到15个字符'))
+          return cb(new Error('长度在6到15个字符'))
         } else {
-          callback()
+          cb()
         }
       }, 300)
     }
@@ -141,7 +169,7 @@ export default {
       queryInfo: {
         query: '', // 查询参数是用户名中的一个或者多个连续字符
         pagenum: 1,
-        pagesize: 2 // 此处的值,必须是page-sizes数组中的任意一个值
+        pagesize: 8 // 此处的值,必须是page-sizes数组中的任意一个值
       },
       // 得到的用户数据以及总数
       usersList: [],
@@ -155,12 +183,20 @@ export default {
         mobile: ''
       },
       formLabelWidth: '80px',
-      // 验证规则
+      // 验证规则(添加与编辑共用验证规则)
       addFormRoles: {
         username: [{ validator: checkName, trigger: 'blur' }],
         password: [{ validator: checkPassword, trigger: 'blur' }],
         email: [{ validator: checkEmail, trigger: 'blur' }],
         mobile: [{ validator: checkMobile, trigger: 'blur' }]
+      },
+      editFormVisible: false, // 编辑用户模态框的状态
+      editForm: {
+        // 编辑用户数据
+        id: '', // 编辑后,提交用户信息使用
+        username: '',
+        email: '',
+        mobile: ''
       }
     }
   },
@@ -180,7 +216,7 @@ export default {
       }
       this.usersList = res.data.users
       this.total = res.data.total
-      console.log(this.usersList, this.total)
+      // console.log(this.usersList, this.total)
     },
     // 每页显示数量pagesize发生改变时,触发,重新发送请求
     handleSizeChange (val) {
@@ -205,8 +241,8 @@ export default {
       }
       this.$message.success('修改状态成功')
     },
-    // 点击与关闭模态框重置表单
-    resetForm () {
+    // 添加用户模态框重置表单
+    resetAddForm () {
       this.$refs.addFormRef.resetFields()
     },
     // 点击按钮添加用户
@@ -223,6 +259,58 @@ export default {
         this.$refs.addFormRef.resetFields()
         this.getUsersList()
       })
+    },
+    // 点击删除用户
+    async removeUser (id) {
+      // console.log(id)
+      // 询问是否要删除
+      const confirmResult = await this.$confirm(
+        '此操作将永久删除该用户,是否继续?',
+        '温馨提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(() => {})
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除!')
+      }
+      const { data: res } = await this.axios.delete('users/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除用户失败！')
+      }
+      this.$message.success('删除用户成功！')
+      this.getUsersList()
+    },
+    // 点击编辑,获取用户数据
+    async getUserById (id) {
+      // 根据id查询到该用户数据
+      const { data: res } = await this.axios.get('/users/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('查询用户失败!')
+      }
+      this.editFormVisible = true
+      this.editForm.id = res.data.id
+      this.editForm.username = res.data.username
+      this.editForm.email = res.data.email
+      this.editForm.mobile = res.data.mobile
+      // console.log(res.data)
+    },
+    // 编辑后的提交
+    async editUserById (id) {
+      const { data: res } = await this.axios.put('/users/' + this.editForm.id, {
+        email: this.editForm.email,
+        mobile: this.editForm.mobile
+      })
+      if (res.meta.status !== 200) {
+        return this.$message.error('修改用户信息失败!')
+      }
+      this.$message.success('修改用户信息成功!')
+      this.editFormVisible = false
+      this.getUsersList()
     }
   }
 }

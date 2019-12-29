@@ -1,9 +1,13 @@
 <template>
-  <div>Roles</div>
+  <div class="rolesBox"></div>
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {}
+  }
+}
 </script>
 
 <style lang="less" scoped>
