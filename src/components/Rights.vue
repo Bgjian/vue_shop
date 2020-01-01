@@ -6,19 +6,21 @@
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
       <el-breadcrumb-item>权限列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <!-- 权限列表 -->
-    <el-table :data="rightsList" stripe  :default-sort = "{prop: 'level'}">
-      <el-table-column label="#" type="index" align="center"></el-table-column>
-      <el-table-column label="权限名称" prop="authName" align="center"></el-table-column>
-      <el-table-column label="路径" prop="path" align="center"></el-table-column>
-      <el-table-column label="权限等级" prop="level" align="center">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.level == 0">一级权限</el-tag>
-          <el-tag v-if="scope.row.level == 1" type="success">二级权限</el-tag>
-          <el-tag v-if="scope.row.level == 2" type="warning">三级权限</el-tag>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card shadow="hover">
+      <!-- 权限列表 -->
+      <el-table :data="rightsList" border stripe :default-sort="{prop: 'level'}">
+        <el-table-column label="#" type="index" align="center"></el-table-column>
+        <el-table-column label="权限名称" prop="authName" align="center"></el-table-column>
+        <el-table-column label="路径" prop="path" align="center"></el-table-column>
+        <el-table-column label="权限等级" prop="level" align="center">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.level == 0">一级权限</el-tag>
+            <el-tag v-if="scope.row.level == 1" type="success">二级权限</el-tag>
+            <el-tag v-if="scope.row.level == 2" type="warning">三级权限</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
@@ -49,7 +51,7 @@ export default {
 
 <style lang="less" scoped>
 .rightsBox {
-  .el-table {
+  .el-card {
     margin-top: 20px;
   }
 }

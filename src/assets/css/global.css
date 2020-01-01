@@ -2,7 +2,7 @@
 html,
 body,
 #app {
-  /* min-width: 1366px; */
+  min-width: 1366px;
   height      : 100%;
   margin      : 0;
   padding     : 0;
@@ -54,13 +54,12 @@ ul {
   padding: 20px 20px 10px !important;
 }
 
-/* 角色列表,三级权限样式 */
-.el-tag--light {
-  margin-left  : 5px;
-  margin-bottom: 5px;
+/* tree-table树形组件 */
+.zk-table__cell-inner {
+  text-align: center;
 }
 
-/*  */
-.el-row .el-col:nth-child(last) {
-  border-bottom: 0;
+/* 级联选择器样式 */
+.el-cascader-panel{
+  height: 300px;
 }

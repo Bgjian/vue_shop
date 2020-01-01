@@ -22,6 +22,9 @@ import './assets/css/animate.css'
 // 导入axios
 import axios from 'axios'
 
+// 导入TreeTable
+import TreeTable from 'vue-table-with-tree-grid'
+
 // 配置请求的基准地址
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 
@@ -34,6 +37,9 @@ axios.interceptors.request.use(config => {
 
 // 全局axios
 Vue.prototype.axios = axios
+
+// 全局组件tree-table
+Vue.component('tree-table', TreeTable)
 
 Vue.config.productionTip = false
 

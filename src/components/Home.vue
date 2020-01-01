@@ -107,9 +107,10 @@ export default {
         })
         .catch(() => {})
     },
-    // 点击头像时,让页面重定向刷新,清除sessionStorage中的ActivePath
+    // 点击头像时,跳转到home主页,清除sessionStorage中的ActivePath
     backhome () {
       window.sessionStorage.removeItem('ActivePath')
+      this.$router.push('/home')
       location.reload()
     },
     // 获取全部侧边栏数据

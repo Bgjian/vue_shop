@@ -1,6 +1,6 @@
 import Vue from 'vue'
 // 按需引入饿了吗UI组件组件
-import { Button, Form, FormItem, Input, Message, Container, Header, Aside, Main, Menu, Submenu, MenuItem, Popover, MessageBox, RadioGroup, RadioButton, Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, Pagination, TableColumn, Switch, Tooltip, Dialog, Tag, Tree, Select, Option } from 'element-ui'
+import { Button, Form, FormItem, Input, Message, Container, Header, Aside, Main, Menu, Submenu, MenuItem, Popover, MessageBox, RadioGroup, RadioButton, Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, Pagination, TableColumn, Switch, Tooltip, Dialog, Tag, Tree, Select, Option, Carousel, CarouselItem, Cascader, Alert, Tabs, TabPane } from 'element-ui'
 
 // vue全局注册组件
 Vue.use(Button)
@@ -32,6 +32,12 @@ Vue.use(Tag)
 Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Carousel)
+Vue.use(CarouselItem)
+Vue.use(Cascader)
+Vue.use(Alert)
+Vue.use(Tabs)
+Vue.use(TabPane)
 
 // 在vue的原型上挂载$message,$confirm
 Vue.prototype.$message = Message
