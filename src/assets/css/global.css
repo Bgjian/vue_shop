@@ -3,9 +3,9 @@ html,
 body,
 #app {
   min-width: 1366px;
-  height      : 100%;
-  margin      : 0;
-  padding     : 0;
+  height   : 100%;
+  margin   : 0;
+  padding  : 0;
 }
 
 .el-submenu__title:hover .firstLi span {
@@ -35,7 +35,7 @@ ul {
 /* 添加用户模态框的样式修改 */
 
 .el-dialog__body {
-  padding: 20px 30px 10px !important;
+  padding: 10px 20px 20px !important;
 }
 
 .el-dialog {
@@ -47,11 +47,11 @@ ul {
 }
 
 .el-dialog__footer {
-  padding: 0px 30px 30px !important;
+  padding: 0px 20px 30px !important;
 }
 
 .el-dialog__header {
-  padding: 20px 20px 10px !important;
+  padding: 20px 20px 30px !important;
 }
 
 /* tree-table树形组件 */
@@ -60,6 +60,25 @@ ul {
 }
 
 /* 级联选择器样式 */
-.el-cascader-panel{
+.el-cascader-panel {
   height: 300px;
+}
+
+/* 步骤条样式 */
+.el-steps {
+  margin: 20px 0;
+}
+
+.el-step__title {
+  font-size: 13px;
+}
+
+/* 多选框样式 */
+.el-checkbox {
+  margin: 0 30px 15px 0 !important;
+}
+
+/* 富文本编辑器的最小高度 */
+.ql-editor{
+    min-height: 300px;
 }

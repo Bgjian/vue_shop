@@ -68,9 +68,9 @@
               </template>
             </el-table-column>
             <!-- 索引列 -->
-            <el-table-column type="index" label="#"></el-table-column>
+            <el-table-column type="index" label="#" align="center"></el-table-column>
             <el-table-column label="参数名称" prop="attr_name"></el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" align="center">
               <template slot-scope="scope">
                 <el-button
                   size="mini"
@@ -129,9 +129,9 @@
               </template>
             </el-table-column>
             <!-- 索引列 -->
-            <el-table-column type="index" label="#"></el-table-column>
+            <el-table-column type="index" label="#" align="center"></el-table-column>
             <el-table-column label="属性名称" prop="attr_name"></el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" align="center">
               <template slot-scope="scope">
                 <el-button
                   size="mini"
@@ -153,7 +153,12 @@
     </el-card>
 
     <!-- 添加参数的对话框 -->
-    <el-dialog :title="'添加' + titleText" :visible.sync="addDialogVisible" width="700px" @close="addDialogClosed">
+    <el-dialog
+      :title="'添加' + titleText"
+      :visible.sync="addDialogVisible"
+      width="700px"
+      @close="addDialogClosed"
+    >
       <!-- 添加参数的对话框 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
         <el-form-item :label="titleText" prop="attr_name">
@@ -167,7 +172,12 @@
     </el-dialog>
 
     <!-- 修改参数的对话框 -->
-    <el-dialog :title="'修改' + titleText" :visible.sync="editDialogVisible" width="700px" @close="editDialogClosed">
+    <el-dialog
+      :title="'修改' + titleText"
+      :visible.sync="editDialogVisible"
+      width="700px"
+      @close="editDialogClosed"
+    >
       <!-- 添加参数的对话框 -->
       <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="100px">
         <el-form-item :label="titleText" prop="attr_name">
@@ -224,7 +234,9 @@ export default {
         attr_name: [
           { required: true, message: '请输入参数名称', trigger: 'blur' }
         ]
-      }
+      },
+      // 选择三级分类后,保存参数信息数据
+      tagValue: []
     }
   },
   created () {
@@ -246,11 +258,11 @@ export default {
     },
     // tab 页签点击事件的处理函数
     handleTabClick () {
-      console.log(this.activeName)
+      // console.log(this.activeName)
       this.getParamsData()
     },
     // 获取参数的列表数据
-    async getParamsData () {
+    async getParamsData (id) {
       // 证明选中的不是三级分类
       if (this.selectedCateKeys.length !== 3) {
         this.selectedCateKeys = []
@@ -259,7 +271,7 @@ export default {
         return
       }
       // 证明选中的是三级分类
-      console.log(this.selectedCateKeys)
+      // console.log(this.selectedCateKeys)
       // 根据所选分类的Id，和当前所处的面板，获取对应的参数
       const { data: res } = await this.axios.get(
         `categories/${this.cateId}/attributes`,
@@ -277,12 +289,37 @@ export default {
         // 文本框中输入的值
         item.inputValue = ''
       })
-
-      console.log(res.data)
+      // console.log(res.data)
       if (this.activeName === 'many') {
         this.manyTableData = res.data
       } else {
         this.onlyTableData = res.data
+      }
+
+      // 确保修改参数名称,或者属性名称后,attr_vals值不变
+      if (!id) {
+        this.tagValue = res.data
+      }
+      if (id) {
+        var newArr = []
+        this.tagValue.forEach(item => {
+          if (item.attr_id === id) {
+            newArr = item.attr_vals
+          }
+        })
+        res.data.forEach(item => {
+          if (item.attr_id === id) {
+            item.attr_vals = newArr
+            this.axios.put(
+              `categories/${this.cateId}/attributes/${item.attr_id}`,
+              {
+                attr_name: item.attr_name,
+                attr_sel: item.attr_sel,
+                attr_vals: item.attr_vals.join(' ')
+              }
+            )
+          }
+        })
       }
     },
     // 监听添加对话框的关闭事件
@@ -329,6 +366,7 @@ export default {
     },
     // 点击按钮，修改参数信息
     editParams () {
+      // console.log(this.tagValue)
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return
         const { data: res } = await this.axios.put(
@@ -339,7 +377,7 @@ export default {
           return this.$message.error('修改参数失败！')
         }
         this.$message.success('修改参数成功！')
-        this.getParamsData()
+        this.getParamsData(this.editForm.attr_id)
         this.editDialogVisible = false
       })
     },
@@ -347,7 +385,7 @@ export default {
     async removeParams (attrId) {
       const confirmResult = await this.$confirm(
         '此操作将永久删除该参数, 是否继续?',
-        '提示',
+        '温馨提示',
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -408,7 +446,20 @@ export default {
       })
     },
     // 删除对应的参数可选项
-    handleClose (i, row) {
+    async handleClose (i, row) {
+      const confirmResult = await this.$confirm(
+        '此操作将永久删除该参数, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+      // 用户取消了删除的操作
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已取消删除！')
+      }
       row.attr_vals.splice(i, 1)
       this.saveAttrVals(row)
     }
@@ -447,11 +498,14 @@ export default {
   .el-row {
     margin-top: 20px;
   }
-  .el-tabs{
+  .el-tabs {
     margin-top: 20px;
   }
-  .el-table{
+  .el-table {
     margin-top: 20px;
+  }
+  .el-tag {
+    margin-right: 5px;
   }
 }
 </style>

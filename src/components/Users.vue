@@ -416,6 +416,9 @@ export default {
       position: absolute;
       right:30px;
     }
+    .el-table{
+      margin-top: 20px;
+    }
   }
   .el-pagination {
     height: 40px;
