@@ -15,7 +15,6 @@
           <el-input
             placeholder="请输入搜索的内容"
             v-model="queryInfo.query"
-            clearablequeryInfo
             clearable
             @clear="getGoodsList"
             @change="getGoodsList"
