@@ -1,18 +1,33 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from './components/Login.vue'
-import Home from './components/Home.vue'
-import Welcome from './components/Welcome.vue'
-import Users from './components/Users.vue'
-import Roles from './components/Roles.vue'
-import Rights from './components/Rights.vue'
-import Goods from './components/Goods.vue'
-import GoodsAdd from './components/GoodsAdd.vue'
-import GoodsEdit from './components/GoodsEdit.vue'
-import Params from './components/Params.vue'
-import Categories from './components/Categories.vue'
-import Orders from './components/Orders.vue'
-import Reports from './components/Reports.vue'
+// import Login from './components/Login.vue'
+// import Home from './components/Home.vue'
+// import Welcome from './components/Welcome.vue'
+// import Users from './components/Users.vue'
+// import Roles from './components/Roles.vue'
+// import Rights from './components/Rights.vue'
+// import Goods from './components/Goods.vue'
+// import GoodsAdd from './components/GoodsAdd.vue'
+// import GoodsEdit from './components/GoodsEdit.vue'
+// import Params from './components/Params.vue'
+// import Categories from './components/Categories.vue'
+// import Orders from './components/Orders.vue'
+// import Reports from './components/Reports.vue'
+
+// 路由组件的懒加载
+const Login = () => import(/* webpackChunkName:"login_home_welcome" */ './components/Login.vue')
+const Home = () => import(/* webpackChunkName:"login_home_welcome" */ './components/Home.vue')
+const Welcome = () => import(/* webpackChunkName:"login_home_welcome" */ './components/Welcome.vue')
+const Users = () => import(/* webpackChunkName:"users" */ './components/Users.vue')
+const Roles = () => import(/* webpackChunkName:"power" */ './components/Roles.vue')
+const Rights = () => import(/* webpackChunkName:"power" */ './components/Rights.vue')
+const Goods = () => import(/* webpackChunkName:"goods" */ './components/Goods.vue')
+const GoodsAdd = () => import(/* webpackChunkName:"goods" */ './components/GoodsAdd.vue')
+const GoodsEdit = () => import(/* webpackChunkName:"goods" */ './components/GoodsEdit.vue')
+const Params = () => import(/* webpackChunkName:"goods" */ './components/Params.vue')
+const Categories = () => import(/* webpackChunkName:"categories" */ './components/Categories.vue')
+const Orders = () => import(/* webpackChunkName:"orders" */ './components/Orders.vue')
+const Reports = () => import(/* webpackChunkName:"reports" */ './components/Reports.vue')
 
 Vue.use(Router)
 

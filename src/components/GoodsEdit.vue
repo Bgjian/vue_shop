@@ -223,9 +223,6 @@ export default {
         if (this.editForm.goods_name.trim() === '0') {
           this.$message.error('请输入商品名称')
           return false
-        } else if (this.editForm.goods_price === 0) {
-          this.$message.error('请输入商品价格')
-          return false
         } else if (this.editForm.goods_weight === 0) {
           this.$message.error('请输入商品重量')
           return false
@@ -265,7 +262,7 @@ export default {
       this.$message.success('上传成功')
       // 将服务器返回的临时路径保存到pics数组中
       this.pics.push({ pic: response.data.tmp_path })
-      console.log(this.pics)
+      // console.log(this.pics)
     },
     // 编辑完成后,点击按钮提交
     async addGoods () {

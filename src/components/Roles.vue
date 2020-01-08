@@ -12,7 +12,7 @@
         <el-button type="primary" @click="add">添加角色</el-button>
       </div>
       <!-- 角色列表区域 -->
-      <el-table :data="rolesList" border stripe>
+      <el-table :data="rolesList" border stripe :row-key="rolesList.id">
         <!-- 展开列 -->
         <el-table-column type="expand">
           <template slot-scope="scope">
@@ -197,7 +197,7 @@ export default {
         return this.$message.error('获取权限列表失败')
       }
       this.rolesList = res.data
-      // console.log(this.rolesList)
+      console.log(this.rolesList)
     },
     // 删除角色的权限
     async removeRightById (role, rightId) {
@@ -317,7 +317,7 @@ export default {
       ]
       // 将数组转换为 , 拼接的字符串
       const isStr = keys.join(',')
-      console.log(isStr)
+      // console.log(isStr)
       // 发送请求完成更新
       const { data: res } = await this.axios.post(
         `roles/${this.roleId}/rights`,

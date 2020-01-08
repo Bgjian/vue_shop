@@ -258,7 +258,7 @@ export default {
     },
     // 级联选择器分类被选中,触发
     parentCateChanged () {
-      console.log(this.selectedKeys)
+      // console.log(this.selectedKeys)
       if (this.selectedKeys.length > 0) {
         // 如果用户指定选择了父级分类
         // 则将数组中的最后一项设置为新添加分类的父级分类
@@ -280,7 +280,7 @@ export default {
     },
     // 点击确定，完成添加分类
     addCate () {
-      console.log(this.addCateForm)
+      // console.log(this.addCateForm)
       this.$refs.addCateFormRef.validate(async valid => {
         if (!valid) return
         // 发送请求完成添加分类

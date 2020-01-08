@@ -7,7 +7,7 @@
       <el-breadcrumb-item>数据报表</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
-       <div id="main" style="width:1230px;height:400px;margin-top:10px"></div>
+       <div id="main" style="width:100%;height:400px;margin-top:10px"></div>
     </el-card>
   </div>
 </template>

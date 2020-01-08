@@ -28,7 +28,7 @@
       </el-row>
       <!-- 用户列表区域 -->
       <el-table :data="goodsList" stripe border>
-        <el-table-column label="#" type="index" align="center"></el-table-column>
+        <el-table-column label="#" prop="x" align="center" width="50px"></el-table-column>
         <el-table-column label="商品名称" prop="goods_name"></el-table-column>
         <el-table-column label="商品价格(元)" prop="goods_price" align="center" width="100px"></el-table-column>
         <el-table-column label="商品重量" prop="goods_weight" align="center" width="100px"></el-table-column>
@@ -103,6 +103,10 @@ export default {
       }
       this.goodsList = res.data.goods
       this.total = res.data.total
+      let indexNum = (this.queryInfo.pagenum - 1) * this.queryInfo.pagesize
+      this.goodsList.forEach((item, index) => {
+        item.x = index + 1 + indexNum
+      })
       // console.log(this.goodsList)
     },
     // 每页显示数量pagesize发生改变时,触发,重新发送请求

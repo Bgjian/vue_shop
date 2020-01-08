@@ -8,7 +8,7 @@ import App from './App.vue'
 import router from './router.js'
 
 // 导入饿了吗ui
-import './plugins/element.js'
+// import './plugins/element.js'
 
 // 导入字体图标
 import './assets/fonts/iconfont.css'
@@ -17,30 +17,43 @@ import './assets/fonts/iconfont.css'
 import './assets/css/global.css'
 
 // 导入动画样式表
-import './assets/css/animate.css'
+// import './assets/css/animate.css'
 
 // 导入axios
 import axios from 'axios'
 
-// 导入TreeTable
+// // 导入TreeTable
 import TreeTable from 'vue-table-with-tree-grid'
 
-// 导入vue-quill-editor（富文本编辑器）
+// // 导入vue-quill-editor（富文本编辑器）
 import VueQuillEditor from 'vue-quill-editor'
 
-// 导入vue-quill-editor的样式
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+// // 导入vue-quill-editor的样式
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
+
+// // 导入进度条NProgress包对应的js和css
+import NProgress from 'nprogress'
+// import 'nprogress/nprogress.css'
 
 // 配置请求的基准地址
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 
 // axios请求拦截
-axios.interceptors.request.use(config => {
+axios.interceptors.request.use(request => {
+  // 在请求拦截中,调用进度条的展示函数
+  NProgress.start()
   // 为所有请求统一添加请求头,携带字段Authorization
-  config.headers.Authorization = window.sessionStorage.getItem('Authorization')
-  return config
+  request.headers.Authorization = window.sessionStorage.getItem('Authorization')
+  return request
+})
+
+// axixos响应拦截
+axios.interceptors.response.use(response => {
+  // 在响应拦截中,调用进度条的隐藏函数
+  NProgress.done()
+  return response
 })
 
 // 全局axios
